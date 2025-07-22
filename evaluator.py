@@ -52,7 +52,7 @@ class Evaulator:
             question = sample["question"]
             options = sample["options"]
             user_prompt = (
-                "Solve and choose the symbol of answer in [Options] using following format at the end of response\n"
+                "Solve the [Question] and provide the symbol of answer in [Options] using following format, at the end of response\n"
                 "```json\n"
                 '{"answer_symbol": "A"}\n'
                 "```\n\n"
