@@ -51,19 +51,18 @@ class Evaulator:
                 continue
             question = sample["question"]
             options = sample["options"]
-            system_prompt = (
-                "Solve and choose the symbol of answer in [Options] using following format at the end of response.\n"
+            user_prompt = (
+                "Solve and choose the symbol of answer in [Options] using following format at the end of response\n"
                 "```json\n"
                 '{"answer_symbol": "A"}\n'
-                "```"
+                "```\n\n"
             )
-            if not self.thinking:
-                system_prompt += "\n\n/no_think"
             messages = [
-                ["system", system_prompt],
+                ["system", "/think" if self.thinking else "/no_think"],
                 [
                     "user",
                     (
+                        f"{user_prompt}"
                         f"[Question]\n{question}\n"
                         f"[Options]\n{"\n".join([f"{chr(ord("A")+idx)}) {option}" for idx, option in enumerate(options)])}"
                     )
@@ -76,14 +75,22 @@ class Evaulator:
 
     @staticmethod
     def _parse_answer(response: str) -> Optional[str]:
-        if "```json" not in response:
-            return
-        front_split = response.split("```json")[1]
-        if "```" not in front_split:
-            return
-        end_split = front_split.split("```")[0]
-        return json.loads(end_split)["answer_symbol"]
-
+        if "```json" in response:
+            response = response.split("```json")[1]
+        if "```" in response:
+            response = response.split("```")[0]
+        try:
+            json_response = json.loads(response)
+            answer_symbol = json_response["answer_symbol"]
+        except json.JSONDecodeError:
+            if '{"answer_symbol": "' in response and '"}' in response:
+                return response.split('{"answer_symbol": "')[-1].split('"}')[0]
+            else:
+                return None
+        except KeyError:
+            return None
+        return answer_symbol
+    
     def log_accuracy(self):
         stat = {"overall": {"correct": 0, "total": len(self.answer_sheet)}}
         for item in self.answer_sheet.values():
