@@ -1,0 +1,11 @@
+[project]
+name = "evaluation"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "datasets>=4.0.0",
+    "langchain-openai>=0.3.28",
+    "pydantic-settings>=2.10.1",
+]
