@@ -89,6 +89,8 @@ class Evaulator:
                 return None
         except KeyError:
             return None
+        except TypeError:
+            return None
         return answer_symbol
     
     def log_accuracy(self):
