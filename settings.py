@@ -7,9 +7,8 @@ class Settings(BaseSettings):
     model_name: str
     openai_api_url: str
     openai_api_key: str
-    dataset: str
-    save_dir: str = Field(default="answer_sheet")
+    save_dir: str = Field(default="results")
     save_step: int = Field(default=100)
-    thinking: bool = Field(default=True)
+    no_think: bool = Field(default=False)
 
     model_config = SettingsConfigDict(env_file=os.path.join(os.path.dirname(__file__), ".env"))
